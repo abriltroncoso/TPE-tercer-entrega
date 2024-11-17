@@ -44,4 +44,30 @@ class apiControlador
         $sede = $this->modelo->obtenerSedePorId($id);
         return $this->vista->response($sede, 200);
     }
+
+    public function obtenerPorId($req, $res)
+    {
+        $id = $req->params->id;
+        $sede = $this->modelo->obtenerSedePorId($id);
+
+        if ($sede) {
+            return $this->vista->response($sede, 200); 
+        } else {
+            return $this->vista->response("La sede con ID $id no existe", 404); 
+        }
+    }
+
+    public function agregarSede($req, $res)
+    {
+        $pais = $req->body->pais ?? null;
+        $ciudad = $req->body->ciudad ?? null;
+
+        if (!$pais || !$ciudad) {
+            return $this->vista->response("Faltan completar 'pais' y/o 'ciudad'", 400);
+        }
+
+        $this->modelo->agregarSede($pais, $ciudad);
+        return $this->vista->response("Sede agregada correctamente", 201);
+    }
+
 }

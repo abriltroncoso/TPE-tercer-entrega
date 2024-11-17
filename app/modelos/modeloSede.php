@@ -27,7 +27,6 @@ class modeloSede
         $query = $this->db->prepare($sql);
         $query->execute();
 
-        // 3. Obtengo los datos en un arreglo de objetos
         $sedes = $query->fetchAll(PDO::FETCH_OBJ);
 
         return $sedes;
