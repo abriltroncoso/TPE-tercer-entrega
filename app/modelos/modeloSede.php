@@ -8,7 +8,7 @@ class modeloSede
         $this->db = new PDO('mysql:host=localhost;dbname=voluntariado;charset=utf8', 'root', '');
     }
 
-    public function obtenerSedes($orderBy = false)
+    public function obtenerSedes($orderBy = false, $offset = 0, $limit = 0)
     {
         $sql = 'SELECT * FROM sede';
         if ($orderBy) {
@@ -19,15 +19,18 @@ class modeloSede
                 case 'ciudad':
                     $sql .= ' ORDER BY ciudad';
                     break;
-                default:
-
-                    break;
             }
         }
-        $query = $this->db->prepare($sql);
-        $query->execute();
 
-        // 3. Obtengo los datos en un arreglo de objetos
+        if ($limit > 0)
+            $sql .= ' LIMIT :limit OFFSET :offset';
+
+        $query = $this->db->prepare($sql);
+        if ($limit > 0) {
+            $query->bindValue(':limit', (int) $limit, PDO::PARAM_INT);
+            $query->bindValue(':offset', (int) $offset, PDO::PARAM_INT);
+        }
+        $query->execute();
         $sedes = $query->fetchAll(PDO::FETCH_OBJ);
 
         return $sedes;

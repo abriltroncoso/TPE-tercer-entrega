@@ -16,13 +16,21 @@ class apiControlador
 
     public function obtenerTodas($req, $res)
     {
-
+        $page = 0;
+        $size = 0;
         $orderBy = false;
         if (isset($req->query->orderBy)) {
             $orderBy = $req->query->orderBy;
         }
 
-        $sedes = $this->modelo->obtenerSedes($orderBy);
+        if (isset($req->query->page))
+            $page = max(1, $req->query->page);
+
+        if (isset($req->query->size))
+            $size = max(1, $req->query->size);
+
+        $offset = ($page - 1) * $size;
+        $sedes = $this->modelo->obtenerSedes($orderBy, $offset, $size);
         return $this->vista->response($sedes);
     }
 
